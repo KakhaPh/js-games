@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random ME or PC Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+
+        #title {
+            font-size: 30px;
+            margin: 20px 0;
+        }
+
+        .score {
+            font-size: 30px;
+            border: 2px solid green;
+            width: 60px;
+            display: inline-block;
+            text-align: center;
+            margin: 0 10px;
+        }
+
+        .label {
+            font-size: 30px;
+        }
+
+        #result {
+            font-size: 30px;
+            margin-top: 20px;
+        }
+
+        .winner {
+            color: green;
+        }
+
+        .loser {
+            color: red;
+        }
+
+        table {
+            margin: 0 auto;
+        }
+
+        #restartButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="title">თამაში ME or PC (random)</h1>
+    <table>
+        <tr>
+            <td class="label" style="color: green;">ME</td>
+            <td><p id="MEcount" class="score"></p></td>
+            <td class="label">:</td>
+            <td><p id="PCcount" class="score"></p></td>
+            <td class="label" style="color: red;">PC</td>
+        </tr>
+    </table>
+    <p id="result"></p>
+    <button id="restartButton">დაწყება თავიდან</button>
+
+    <script>
+        function startGame() {
+            let CountMe = 0;
+            let CountPC = 0;
+
+            for (let i = 0; i < 100; i++) {
+                const randomValue = Math.random();
+                if (randomValue > 0.5) {
+                    CountMe++;
+                } else {
+                    CountPC++;
+                }
+            }
+
+            document.getElementById("MEcount").textContent = CountMe;
+            document.getElementById("PCcount").textContent = CountPC;
+
+            const resultElement = document.getElementById("result");
+            if (CountMe > CountPC) {
+                resultElement.textContent = "თქვენ მოიგეთ!!!";
+                resultElement.className = "winner";
+            } else if (CountMe < CountPC) {
+                resultElement.textContent = "თქვენ წააგეთ!!!";
+                resultElement.className = "loser";
+            } else {
+                resultElement.textContent = "ფრეა!";
+                resultElement.className = "";
+            }
+        }
+
+        startGame();
+
+        document.getElementById("restartButton").addEventListener("click", startGame);
+    </script>
+</body>
+</html>

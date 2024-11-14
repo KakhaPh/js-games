@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deck ME or PC</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        #title {
+            font-size: 30px;
+            margin: 20px 0;
+        }
+
+        .player-label {
+            font-size: 30px;
+        }
+
+        .me {
+            color: green;
+        }
+
+        .pc {
+            color: red;
+        }
+
+        img {
+            width: 80px;
+            height: auto;
+        }
+
+        #Sedegi {
+            font-size: 30px;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            margin: 20px 0;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        td {
+            padding: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="title">თამაში ME or PC(deck)</div>
+
+    <table>
+        <tr>
+            <td>
+                <p class="player-label me">ME</p>
+            </td>
+            <td>
+                <img src="deck/blank.gif" id="cardME" alt="ME Card">
+            </td>
+            <td>
+                <p class="player-label">:</p>
+            </td>
+            <td>
+                <img src="deck/blank.gif" id="cardPC" alt="PC Card">
+            </td>
+            <td>
+                <p class="player-label pc">PC</p>
+            </td>
+        </tr>
+    </table>
+
+    <p id="Sedegi"></p>
+
+    <button onclick="restartGame()">Restart Game</button>
+
+    <script>
+		const banqo = [
+            "6a", "6g", "6j", "6k",
+            "7a", "7g", "7j", "7k",
+            "8a", "8g", "8j", "8k",
+            "9a", "9g", "9j", "9k",
+            "10a", "10g", "10j", "10k",
+            "va", "vg", "vj", "vk",
+            "da", "dg", "dj", "dk",
+            "ka", "kg", "kj", "kk",
+            "ta", "tg", "tj", "tk"
+        ];
+		function restartGame() {
+			const MEcard_I = Math.floor(Math.random() * 36);
+            const PCcard_I = Math.floor(Math.random() * 36);
+            
+			document.getElementById("cardME").src = `deck/${banqo[MEcard_I]}.gif`;
+            document.getElementById("cardPC").src = `deck/${banqo[PCcard_I]}.gif`;
+
+			console.log(MEcard_I)
+			console.log(PCcard_I)
+            
+			const resultElement = document.getElementById("Sedegi");
+            if (MEcard_I > PCcard_I) {
+                resultElement.style.color = "green";
+                resultElement.textContent = "თქვენ მოიგეთ!!!";
+            } else {
+                resultElement.style.color = "red";
+                resultElement.textContent = "თქვენ წააგეთ!!!";
+            }
+        }
+
+		window.onload = restartGame;
+    </script>
+
+</body>
+</html>

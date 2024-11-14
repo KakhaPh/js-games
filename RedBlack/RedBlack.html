@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ka">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>წეითელი და შავი</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin: 0;
+        padding: 20px;
+      }
+      
+      table {
+        margin: 0 auto;
+        border-collapse: collapse;
+      }
+      
+      td {
+        padding: 10px;
+      }
+
+      img {
+        width: 100px;
+        cursor: pointer;
+      }
+
+      p {
+        font-size: 30px;
+        color: red;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <table>
+      <tr>
+        <td><img src="deck/blank.gif" onmouseover="over(0);"></td>
+        <td><img src="deck/blank.gif" onmouseover="over(1);"></td>
+        <td><img src="deck/blank.gif" onmouseover="over(2);"></td>
+        <td><img src="deck/blank.gif" onmouseover="over(3);"></td>
+        <td><img src="deck/blank.gif" onmouseover="over(4);"></td>
+      </tr>
+    </table>
+
+    <p id="Sedegi">თქვენი კარტები არის წითელი ფერის.</p>
+
+    <script>
+      const banqo = [
+        "6a", "6g", "6j", "6k", "7a", "7g", "7j", "7k", "8a", "8g", "8j", "8k",
+        "9a", "9g", "9j", "9k", "10a", "10g", "10j", "10k", "va", "vg", "vj", "vk",
+        "da", "dg", "dj", "dk", "ka", "kg", "kj", "kk", "ta", "tg", "tj", "tk"
+      ];
+
+      const ferebi = [
+        "წ", "წ", "შ", "შ", "წ", "წ", "შ", "შ", "წ", "წ", "შ", "შ", "წ", "წ",
+        "შ", "შ", "წ", "წ", "შ", "შ", "წ", "წ", "შ", "შ", "წ", "წ", "შ", "შ",
+        "წ", "წ", "შ", "შ", "წ", "წ", "შ", "შ"
+      ];
+
+      let countBlack = 0;
+      let countRed = 0;
+
+      function over(index) {
+        const r = Math.floor(36 * Math.random());
+        document.images[index].src = `deck/${banqo[r]}.gif`;
+
+        if (ferebi[r] === "წ") {
+          countRed++;
+        } else {
+          countBlack++;
+        }
+
+        if (index === 4) {
+          showResult();
+        }
+      }
+
+      function showResult() {
+        const result = countRed > countBlack ? "თქვენ მოიგეთ!!!" : "თქვენ წააგეთ!!!";
+        document.getElementById("Sedegi").textContent = result;
+      }
+    </script>
+  </body>
+</html>

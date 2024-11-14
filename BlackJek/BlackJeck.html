@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Black Jack! - Kakha Putkaradze</title>
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			text-align: center;
+			background-color: #2a41b3;
+			color: #ecf0f1;
+		}
+
+		#gameTable {
+			padding: 20px auto;
+		}
+
+		img {
+			width: 100px;
+			border-radius: 10px;
+			padding: 5px;
+		}
+
+		#controls {
+			padding-top: 20px;
+		}
+
+		button {
+			padding: 10px 20px;
+			font-size: 16px;
+			cursor: pointer;
+			border: none;
+			border-radius: 5px;
+			background-color: #3498db;
+			color: #fff;
+		}
+
+		button:hover {
+			background-color: #2980b9;
+		}
+
+		#result {
+			font-size: 30px;
+		}
+	</style>
+</head>
+
+<body>
+	<h1>Blackjack!</h1>
+	<p id="status">თამაშის დასაწყებად დააჭირეთ "დაწყებას"!</p>
+	<div id="gameTable">
+		<div id="dealer-cards"></div>
+		<h2>PC ქულა: <span id="dealer-score">0</span></h2>
+		<hr>
+		<div id="player-cards"></div>
+		<h2>ჩემი ქულა: <span id="player-score">0</span></h2>
+	</div>
+	<div id="controls">
+		<button onclick="startGame()">დაწყება</button>
+		<button onclick="hit()">გაზრდა</button>
+		<button onclick="stand()">მიღება</button>
+		<button onclick="resetGame()">თავიდან დაწყება</button>
+	</div>
+	<p id="result"></p>
+
+	<script>
+		const deck = ["6a", "6g", "6j", "6k", 
+					  "7a", "7g", "7j", "7k",
+					  "8a", "8g", "8j", "8k", 
+					  "9a", "9g", "9j", "9k",
+					  "10a", "10g", "10j", "10k", 
+					  "va", "vg", "vj", "vk",
+					  "da", "dg", "dj", "dk", 
+					  "ka", "kg", "kj", "kk",
+					  "ta", "tg", "tj", "tk"
+		];
+
+		const values = [6, 6, 6, 6,
+						7, 7, 7, 7, 
+						8, 8, 8, 8, 
+						9, 9, 9, 9,
+						10, 10, 10, 10, 
+						2, 2, 2, 2, 
+						3, 3, 3, 3, 
+						4, 4, 4, 4, 
+						11, 11, 11, 11
+		];
+
+		let dealerScore = 0;
+		let playerScore = 0;
+		let dealerCards = [];
+		let playerCards = [];
+		var result = document.getElementById("result");
+
+		function shuffleDeck() {
+			for (let i = deck.length - 1; i > 0; i--) {
+				const j = Math.floor(Math.random() * (i + 1));
+				[deck[i], deck[j]] = [deck[j], deck[i]];
+				[values[i], values[j]] = [values[j], values[i]];
+			}
+		}
+
+		function startGame() {
+			shuffleDeck();
+			dealerScore = 0;
+			playerScore = 0;
+			dealerCards = [];
+			playerCards = [];
+			drawCard('dealer');
+			drawCard('player');
+			drawCard('player');
+			updateUI();
+		}
+
+		function drawCard(player) {
+			const cardIndex = Math.floor(Math.random() * deck.length);
+			const cardValue = values[cardIndex];
+			const cardImage = `deck/${deck[cardIndex]}.gif`;
+			if (player === 'dealer') {
+				dealerCards.push(cardImage);
+				dealerScore += cardValue;
+			} else {
+				playerCards.push(cardImage);
+				playerScore += cardValue;
+			}
+			checkGameStatus();
+		}
+
+		function checkGameStatus() {
+			if (playerScore === 21) {
+				document.getElementById("result").innerHTML = "Blackjack! თქვენ მოიგეთ!";
+				result.style.color = "lightgreen"
+			} else if (playerScore > 21) {
+				document.getElementById("result").innerHTML = "თქვენ წააგეთ!";
+				result.style.color = "red"
+			} else if (dealerScore > 21) {
+				document.getElementById("result").innerHTML = "PC გადაცდა 21-ს! თქვენ მოიგეთ!";
+				result.style.color = "lightgreen"
+			}
+		}
+
+		function updateUI() {
+			const dealerDiv = document.getElementById('dealer-cards');
+			const playerDiv = document.getElementById('player-cards');
+			dealerDiv.innerHTML = '';
+			playerDiv.innerHTML = '';
+
+			dealerCards.forEach(card => {
+				const img = document.createElement('img');
+				img.src = card;
+				dealerDiv.appendChild(img);
+			});
+
+			playerCards.forEach(card => {
+				const img = document.createElement('img');
+				img.src = card;
+				playerDiv.appendChild(img);
+			});
+
+			document.getElementById('dealer-score').innerText = dealerScore;
+			document.getElementById('player-score').innerText = playerScore;
+		}
+
+		function hit() {
+			if (playerScore < 21) {
+				drawCard('player');
+				updateUI();
+			}
+		}
+
+		function stand() {
+			while (dealerScore < 17) {
+				drawCard('dealer');
+			}
+			updateUI();
+			if (dealerScore > 21 || playerScore > dealerScore) {
+				document.getElementById("result").innerHTML = "თქვენ მოიგეთ!";
+				result.style.color = "lightgreen"
+			} else {
+				document.getElementById("result").innerHTML = "თქვენ წააგეთ!";
+				result.style.color = "red"
+			}
+		}
+
+		function resetGame() {
+			document.getElementById("result").innerHTML = "";
+			startGame();
+		}
+	</script>
+</body>
+
+</html>

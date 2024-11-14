@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deck</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <h1>HIGH OR LOW</h1>
+    </header>
+
+
+    <div class="round-time-bar" data-style="smooth">
+        <div class="inner_div"></div>
+        <p id="note"></p>
+    </div>
+    <section class="gameSection">
+        <div id="deck"></div>
+        <p id="text"></p>
+        <button class="btn_1" id="buttonChange" onclick="change();">კარტის შეცვლა</button>
+        <button class="btn_2" id="btnUp" onclick="up();">მაღალი</button>
+        <button class="btn_3" id="btnDown" onclick="down();">დაბალი</button>
+    </section>
+
+    <footer>
+        <h4>Copytight (c) 2024</h4>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
