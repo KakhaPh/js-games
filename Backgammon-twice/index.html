@@ -1,0 +1,300 @@
+<!doctype html>
+<html>
+
+<head>
+	<title>თამაში ნარდი (წყვილად)</title>
+	<meta charset="utf-8">
+	<style>
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+		}
+
+		body {
+			background: linear-gradient(135deg, #000428, #004e92);
+			min-height: 100vh;
+			color: #ffffff;
+		}
+
+		header {
+			background: rgba(255, 255, 255, 0.1);
+			backdrop-filter: blur(10px);
+			padding: 0.5rem;
+			text-align: center;
+			box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+		}
+
+		.game-container {
+			max-width: 800px;
+			margin: 1rem auto;
+			padding: 1rem;
+			background: rgba(255, 255, 255, 0.1);
+			backdrop-filter: blur(10px);
+			border-radius: 20px;
+			border: 1px solid rgba(255, 255, 255, 0.2);
+		}
+
+		.flex-display {
+			display: flex;
+			justify-content: space-around;
+			gap: 2rem;
+		}
+
+		.player-section {
+			margin: 2rem 0;
+			border-radius: 15px;
+			background: rgba(255, 255, 255, 0.05);
+			position: relative;
+		}
+
+		.player-label {
+			font-size: 1.5rem;
+			font-weight: bold;
+			margin-bottom: 1rem;
+			color: #fff;
+			text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+		}
+
+		.dice-container {
+			display: flex;
+			justify-content: center;
+			gap: 1rem;
+			margin: 1rem 0;
+		}
+
+		img {
+			width: 80px;
+			height: auto;
+			border-radius: 12px;
+			box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+			transition: transform 0.6s ease;
+			animation: diceRoll 0.6s ease-out;
+		}
+
+		@keyframes diceRoll {
+			0% {
+				transform: rotate(0deg) scale(0.5);
+				opacity: 0;
+			}
+
+			50% {
+				transform: rotate(180deg) scale(1.2);
+			}
+
+			100% {
+				transform: rotate(360deg) scale(1);
+				opacity: 1;
+			}
+		}
+
+		img:hover {
+			transform: rotate(10deg) scale(1.1);
+		}
+
+		#Sedegi {
+			font-size: 1.5rem;
+			font-weight: bold;
+			text-align: center;
+			margin: 2rem 0 1rem 0;
+			padding: 1rem;
+			border-radius: 15px;
+			transition: all 0.3s ease;
+			text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+			animation: resultPop 0.5s ease-out;
+		}
+
+		#angariSi {
+			font-size: 2rem;
+			font-weight: bold;
+			text-align: center;
+			margin: 1rem 0;
+			padding: 1rem;
+			background: rgba(255, 255, 255, 0.1);
+			border-radius: 15px;
+			animation: scorePop 0.5s ease-out;
+		}
+
+		@keyframes resultPop {
+			0% {
+				transform: scale(0.5);
+				opacity: 0;
+			}
+
+			70% {
+				transform: scale(1.1);
+			}
+
+			100% {
+				transform: scale(1);
+				opacity: 1;
+			}
+		}
+
+		@keyframes scorePop {
+			0% {
+				transform: translateY(20px);
+				opacity: 0;
+			}
+
+			100% {
+				transform: translateY(0);
+				opacity: 1;
+			}
+		}
+
+		button {
+			background: linear-gradient(45deg, #00c6ff, #0072ff);
+			color: white;
+			padding: 1rem 2rem;
+			border: none;
+			border-radius: 50px;
+			font-size: 1.2rem;
+			font-weight: bold;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			text-transform: uppercase;
+			letter-spacing: 1px;
+			box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+			position: relative;
+			overflow: hidden;
+			margin: 1rem 0;
+		}
+
+		button::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+			transform: translateX(-100%);
+			transition: 0.6s;
+		}
+
+		button:hover::before {
+			transform: translateX(100%);
+		}
+
+		button:hover {
+			transform: translateY(-3px);
+			box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+		}
+
+		button:active {
+			transform: translateY(1px);
+		}
+
+		footer {
+			background: rgba(255, 255, 255, 0.1);
+			backdrop-filter: blur(10px);
+			color: white;
+			text-align: center;
+			padding: 1rem;
+			position: fixed;
+			bottom: 0;
+			width: 100%;
+			box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.1);
+		}
+
+		@media (max-width: 768px) {
+			header h1 {
+				font-size: 2rem;
+			}
+
+			img {
+				width: 60px;
+			}
+
+			#Sedegi {
+				font-size: 2rem;
+			}
+
+			#angariSi {
+				font-size: 1.5rem;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<header>
+		<h1>თამაში ნარდი (წყვილად)</h1>
+	</header>
+	<div class="game-container">
+		<div class="flex-display">
+			<div class="player-section">
+				<div class="player-label">ME</div>
+				<div class="dice-container">
+					<img src="" id="kamaTeliME1">
+					<img src="" id="kamaTeliME2">
+				</div>
+			</div>
+	
+			<div class="player-section">
+				<div class="player-label">PC</div>
+				<div class="dice-container">
+					<img src="" id="kamaTeliPC1">
+					<img src="" id="kamaTeliPC2">
+				</div>
+			</div>
+		</div>
+
+		<p id="angariSi"></p>
+		<p id="Sedegi"></p>
+
+		<div style="text-align: center;">
+			<button onclick="location.reload();">თამაშის განახლება</button>
+		</div>
+	</div>
+	<footer>ყველა უფლება დაცულია 2025</footer>
+
+	<script type="text/javascript">
+		var sia_kamaTlebi = [
+			"dice-3d-i.png",
+			"dice-3d-ii.png",
+			"dice-3d-iii.png",
+			"dice-3d-iv.png",
+			"dice-3d-v.png",
+			"dice-3d-vi.png"
+		];
+
+		function rollDice() {
+			var kamaTeli_ME1 = Math.floor(Math.random() * 6);
+			var kamaTeli_ME2 = Math.floor(Math.random() * 6);
+			var kamaTeli_PC1 = Math.floor(Math.random() * 6);
+			var kamaTeli_PC2 = Math.floor(Math.random() * 6);
+
+			document.getElementById("kamaTeliME1").src = "Dice3d/" + sia_kamaTlebi[kamaTeli_ME1];
+			document.getElementById("kamaTeliME2").src = "Dice3d/" + sia_kamaTlebi[kamaTeli_ME2];
+			document.getElementById("kamaTeliPC1").src = "Dice3d/" + sia_kamaTlebi[kamaTeli_PC1];
+			document.getElementById("kamaTeliPC2").src = "Dice3d/" + sia_kamaTlebi[kamaTeli_PC2];
+
+			var qulaME = kamaTeli_ME1 + kamaTeli_ME2 + 2;
+			var qulaPC = kamaTeli_PC1 + kamaTeli_PC2 + 2;
+
+			const sedegi = document.getElementById("Sedegi");
+			const angarishi = document.getElementById("angariSi");
+
+			if (qulaME > qulaPC) {
+				sedegi.innerHTML = "თქვენ მოიგეთ";
+				sedegi.style.color = "#4CAF50";
+				sedegi.style.backgroundColor = "rgba(76, 175, 80, 0.1)";
+				sedegi.style.border = "2px solid rgba(76, 175, 80, 0.3)";
+			} else {
+				sedegi.innerHTML = "თქვენ წააგეთ";
+				sedegi.style.color = "#FF5252";
+				sedegi.style.backgroundColor = "rgba(255, 82, 82, 0.1)";
+				sedegi.style.border = "2px solid rgba(255, 82, 82, 0.3)";
+			}
+
+			angarishi.innerHTML = qulaME + " : " + qulaPC;
+		}
+
+		rollDice();
+	</script>
+</body>
+
+</html>
