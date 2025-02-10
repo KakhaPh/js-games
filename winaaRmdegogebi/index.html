@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>წინაღობის დაძლევა</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            max-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            padding: 2rem;
+            color: white;
+        }
+
+        canvas {
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            background-color: #f8f9fa;
+            margin: 1rem 0;
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            width: fit-content;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            width: 480px;
+            padding: 1rem;
+        }
+
+        button {
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .up-btn {
+            grid-column: 2;
+        }
+
+        .left-btn {
+            grid-column: 1;
+        }
+
+        .right-btn {
+            grid-column: 3;
+        }
+
+        .down-btn {
+            grid-column: 2;
+        }
+
+        .title {
+            font-size: 2rem;
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .controls-info {
+            text-align: center;
+            margin-top: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body onload="startGame()">
+    <div class="game-container">
+        <h1 class="title">წინაღობის დაძლევა</h1>
+        <div id="game-canvas"></div>
+        <div class="controls">
+            <button class="up-btn" onmousedown="moveup()" onmouseup="clearmove()" ontouchstart="moveup()">ზევით</button>
+            <button class="left-btn" onmousedown="moveleft()" onmouseup="clearmove()" ontouchstart="moveleft()">მარცხნივ</button>
+            <button class="right-btn" onmousedown="moveright()" onmouseup="clearmove()" ontouchstart="moveright()">მარჯვნივ</button>
+            <button class="down-btn" onmousedown="movedown()" onmouseup="clearmove()" ontouchstart="movedown()">ქვევით</button>
+        </div>
+        <div class="controls-info">
+            გამოიყენე W,A,S,D ღილაკები (სისტემის ენა ინგლისური!)
+        </div>
+    </div>
+
+    <script>
+        var myGamePiece;
+        var myObstacles = [];
+        var myScore;
+        var keysPressed = {};
+
+        function startGame() {
+            myGamePiece = new component(30, 30, "#ff6b6b", 10, 120);
+            myScore = new component("24px", "Inter, sans-serif", "#1a1a2e", 280, 40, "text");
+            myGameArea.start();
+            
+            window.addEventListener('keydown', function(e) {
+                keysPressed[e.key.toLowerCase()] = true;
+                handleKeyboardInput();
+            });
+
+            window.addEventListener('keyup', function(e) {
+                keysPressed[e.key.toLowerCase()] = false;
+                handleKeyboardInput();
+            });
+        }
+
+        function handleKeyboardInput() {
+            myGamePiece.speedX = 0;
+            myGamePiece.speedY = 0;
+
+            if (keysPressed['w']) myGamePiece.speedY = -1;
+            if (keysPressed['s']) myGamePiece.speedY = 1;
+            if (keysPressed['a']) myGamePiece.speedX = -1;
+            if (keysPressed['d']) myGamePiece.speedX = 1;
+        }
+
+        var myGameArea = {
+            canvas : document.createElement("canvas"),
+            start : function() {
+                this.canvas.width = 480;
+                this.canvas.height = 270;
+                this.context = this.canvas.getContext("2d");
+                document.getElementById("game-canvas").appendChild(this.canvas);
+                this.frameNo = 0;
+                this.interval = setInterval(updateGameArea, 20);
+            },
+            clear : function() {
+                this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            },
+            stop : function() {
+                clearInterval(this.interval);
+            }
+        }
+
+        function component(width, height, color, x, y, type) {
+            this.type = type;
+            this.width = width;
+            this.height = height;
+            this.speedX = 0;
+            this.speedY = 0;    
+            this.x = x;
+            this.y = y;    
+            this.update = function() {
+                ctx = myGameArea.context;
+                if (this.type == "text") {
+                    ctx.font = this.width + " " + this.height;
+                    ctx.fillStyle = color;
+                    ctx.fillText(this.text, this.x, this.y);
+                } else {
+                    ctx.fillStyle = color;
+                    if (this !== myGamePiece) {
+                        let gradient = ctx.createLinearGradient(this.x, this.y, this.x + this.width, this.y + this.height);
+                        gradient.addColorStop(0, '#34495e');
+                        gradient.addColorStop(1, '#2c3e50');
+                        ctx.fillStyle = gradient;
+                    }
+                    ctx.fillRect(this.x, this.y, this.width, this.height);
+                }
+            }
+            this.newPos = function() {
+                this.x += this.speedX;
+                this.y += this.speedY;        
+            }
+            this.crashWith = function(otherobj) {
+                var myleft = this.x;
+                var myright = this.x + (this.width);
+                var mytop = this.y;
+                var mybottom = this.y + (this.height);
+                var otherleft = otherobj.x;
+                var otherright = otherobj.x + (otherobj.width);
+                var othertop = otherobj.y;
+                var otherbottom = otherobj.y + (otherobj.height);
+                var crash = true;
+                if ((mybottom < othertop) || (mytop > otherbottom) || (myright < otherleft) || (myleft > otherright)) {
+                    crash = false;
+                }
+                return crash;
+            }
+        }
+
+        function updateGameArea() {
+            var x, height, gap, minHeight, maxHeight, minGap, maxGap;
+            for (i = 0; i < myObstacles.length; i += 1) {
+                if (myGamePiece.crashWith(myObstacles[i])) {
+                    myGameArea.stop();
+                    return;
+                } 
+            }
+            myGameArea.clear();
+            myGameArea.frameNo += 1;
+            if (myGameArea.frameNo == 1 || everyinterval(150)) {
+                x = myGameArea.canvas.width;
+                minHeight = 20;
+                maxHeight = 200;
+                height = Math.floor(Math.random()*(maxHeight-minHeight+1)+minHeight);
+                minGap = 50;
+                maxGap = 200;
+                gap = Math.floor(Math.random()*(maxGap-minGap+1)+minGap);
+                myObstacles.push(new component(10, height, "#2ecc71", x, 0));
+                myObstacles.push(new component(10, x - height - gap, "#2ecc71", x, height + gap));
+            }
+            for (i = 0; i < myObstacles.length; i += 1) {
+                myObstacles[i].speedX = -1;
+                myObstacles[i].newPos();
+                myObstacles[i].update();
+            }
+            myScore.text="Score: " + myGameArea.frameNo;
+            myScore.update();
+            myGamePiece.newPos();    
+            myGamePiece.update();
+        }
+
+        function everyinterval(n) {
+            if ((myGameArea.frameNo / n) % 1 == 0) {return true;}
+            return false;
+        }
+
+        function moveup() {
+            myGamePiece.speedY = -1; 
+        }
+
+        function movedown() {
+            myGamePiece.speedY = 1; 
+        }
+
+        function moveleft() {
+            myGamePiece.speedX = -1; 
+        }
+
+        function moveright() {
+            myGamePiece.speedX = 1; 
+        }
+
+        function clearmove() {
+            myGamePiece.speedX = 0; 
+            myGamePiece.speedY = 0; 
+        }
+    </script>
+</body>
+</html>
