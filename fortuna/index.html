@@ -1,0 +1,347 @@
+<!doctype html>
+<html>
+<head>
+    <title>თამაში ფორტუნა</title>
+    <meta charset="utf-8">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #0f0c29;
+            background: linear-gradient(to right, #24243e, #302b63, #0f0c29);
+            min-height: 100vh;
+            color: #ffffff;
+        }
+
+        .glass-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 900px;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        section {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .card-container {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            perspective: 1000px;
+        }
+
+        .card-wrapper {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        img {
+            width: 120px;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        img:hover {
+            transform: translateY(-10px) rotate(5deg);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .button-container {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 8px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            font-weight: bold;
+            min-width: 150px;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-100%);
+            transition: 0.6s;
+        }
+
+        button:hover::before {
+            transform: translateX(100%);
+        }
+
+        #buttonChange {
+            background: linear-gradient(45deg, #FF416C, #FF4B2B);
+            color: white;
+        }
+
+        #btnUP {
+            background: linear-gradient(45deg, #00b09b, #96c93d);
+            color: white;
+        }
+
+        #btnDown {
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            color: white;
+        }
+
+        #btnRestart {
+            background: linear-gradient(45deg, #8E2DE2, #4A00E0);
+            color: white;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #note {
+            font-size: 1.3rem;
+            margin-top: 2rem;
+            padding: 0.5rem;
+            border-radius: 15px;
+            display: inline-block;
+            min-width: 250px;
+            transition: all 0.3s ease;
+        }
+
+        .win {
+            background: rgba(0, 255, 0, 0.2) !important;
+            border: 2px solid rgba(0, 255, 0, 0.3);
+        }
+
+        .lose {
+            background: rgba(255, 0, 0, 0.2) !important;
+            border: 2px solid rgba(255, 0, 0, 0.3);
+        }
+
+        footer {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            backdrop-filter: blur(10px);
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            
+            img {
+                width: 100px;
+            }
+            
+            button {
+                min-width: 120px;
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>თამაში ფორტუნა</h1>
+    </header>
+    <section>
+        <div class="glass-container">
+            <div class="card-container">
+                <img src="deck/blank.gif">
+                <img src="deck/blank.gif">
+                <img src="deck/blank.gif">
+                <img src="deck/blank.gif">
+                <img src="deck/blank.gif">
+            </div>
+            <div class="button-container">
+                <button id="buttonChange" onclick="Change();">კარტის შეცვლა</button>
+                <button id="btnUP" onclick="Up();">მაღალი</button>
+                <button id="btnDown" onclick="Down();">დაბალი</button>
+                <button id="btnRestart" onclick="restartGame();">თავიდან დაწყება</button>
+            </div>
+            <p id="note"></p>
+        </div>
+    </section>
+    <footer>&copy; ყველა უფლება დაცულია 2025</footer>
+
+    <script type="text/javascript">
+        var N = 0;
+        var kartebi = ["6a","6g","6j","6k"
+                    ,"7a","7g","7j","7k"
+                    ,"8a","8g","8j","8k"
+                    ,"9a","9g","9j","9k"
+                    ,"10a","10g","10j","10k"
+                    ,"va","vg","vj","vk"
+                    ,"da","dg","dj","dk"
+                    ,"ka","kg","kj","kk"
+                    ,"ta","tg","tj","tk"];
+        var aCexili_kartebi = [];
+        
+        function initializeGame() {
+            N = 0;
+            aCexili_kartebi = [];
+            var i = 0;
+            while(i < 36){
+                R = Math.floor(Math.random()*36);
+                if(kartebi[R] == "x"){
+                    continue;
+                }
+                else{
+                    aCexili_kartebi[i] = kartebi[R];
+                    kartebi[R] = "x";
+                    i++;
+                }
+            }
+            
+            for(let j = 0; j < 5; j++) {
+                document.images[j].src = "deck/blank.gif";
+            }
+            
+            document.getElementById("buttonChange").disabled = false;
+            document.getElementById("btnUP").disabled = false;
+            document.getElementById("btnDown").disabled = false;
+            
+            const note = document.getElementById("note");
+            note.innerHTML = "";
+            note.classList.remove("win", "lose");
+            
+            R = Math.floor(Math.random()*36);
+            document.images[N].src = "deck/" + aCexili_kartebi[R] + ".gif";
+            qula_I = qula(R);
+
+
+
+            
+            kartebi = ["6a","6g","6j","6k"
+                    ,"7a","7g","7j","7k"
+                    ,"8a","8g","8j","8k"
+                    ,"9a","9g","9j","9k"
+                    ,"10a","10g","10j","10k"
+                    ,"va","vg","vj","vk"
+                    ,"da","dg","dj","dk"
+                    ,"ka","kg","kj","kk"
+                    ,"ta","tg","tj","tk"];
+        }
+        
+        function restartGame() {
+            initializeGame();
+        }
+        
+        function Change(){
+            pirveli = Math.floor(Math.random()*36);
+            qula_I = qula(pirveli);
+            document.images[N].src = "deck/" + aCexili_kartebi[pirveli] + ".gif";
+            document.getElementById("buttonChange").disabled = "disabled";
+        }
+        
+        function Up(){
+            N++;
+            R = Math.floor(Math.random()*36);
+            document.images[N].src = "deck/" + aCexili_kartebi[R] + ".gif";
+            qulaUP = qula(R);
+            const note = document.getElementById("note");
+            if(qulaUP > qula_I){
+				if(N === 4){
+					note.innerHTML = "გილოცავთ, თქვენ გაიმარჯვეთ!";
+				} else {
+					note.innerHTML = "არის მაღალი";
+				}
+                note.classList.add("win");
+                note.classList.remove("lose");
+                qula_I = qulaUP;
+            }
+            else{
+                note.innerHTML = "არ არის მაღალი";
+                note.classList.add("lose");
+                note.classList.remove("win");
+                document.getElementById("buttonChange").disabled = "disabled";
+                document.getElementById("btnUP").disabled = "disabled";
+                document.getElementById("btnDown").disabled = "disabled";
+            }
+        }
+        
+        function Down(){
+            N++;
+            R = Math.floor(Math.random()*36);
+            document.images[N].src = "deck/" + aCexili_kartebi[R] + ".gif";
+            qulaDown = qula(R);
+            const note = document.getElementById("note");
+            if(qulaDown < qula_I){
+				if(N === 4){ 
+					note.innerHTML = "გილოცავთ, თქვენ გაიმარჯვეთ!";
+				} else {
+					note.innerHTML = "არის დაბალი";
+				}
+                note.classList.add("win");
+                note.classList.remove("lose");
+                qula_I = qulaDown;
+            }
+            else{
+                note.innerHTML = "არ არის დაბალი";
+                note.classList.add("lose");
+                note.classList.remove("win");
+                document.getElementById("buttonChange").disabled = "disabled";
+                document.getElementById("btnUP").disabled = "disabled";
+                document.getElementById("btnDown").disabled = "disabled";
+            }
+        }
+        
+        function qula(r){
+            Q = aCexili_kartebi[r].substring(0,1);
+            if( Q == "6"){ Qula = 6; }
+            if( Q == "7"){ Qula = 7; }
+            if( Q == "8"){ Qula = 8; }
+            if( Q == "9"){ Qula = 9; }
+            if( Q == "1"){ Qula = 10; }
+            if( Q == "v"){ Qula = 11; }
+            if( Q == "d"){ Qula = 12; }
+            if( Q == "k"){ Qula = 13; }
+            if( Q == "t"){ Qula = 14; }
+            return Qula;
+        }
+
+        initializeGame();
+    </script>
+</body>
+</html>
